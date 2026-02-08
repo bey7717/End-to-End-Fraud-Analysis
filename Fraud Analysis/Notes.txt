@@ -1,0 +1,182 @@
+
+################## What is our baseline fraud rate, and how has it changed over time? ############################
+
+Significant Variation: Fraud rates swing from ~0.56% (Week 24) to ~6.17% (Week 43) — nearly an 11x difference.
+
+High-Risk Periods:
+
+Late year (Weeks 43-52): Elevated rates (5.82%-6.17%), likely correlating with holiday shopping season and year-end activity
+Week 11: 5.82% fraud rate (February/March)
+
+Low-Risk Periods:
+
+Week 24: 0.56% fraud rate (June)
+Weeks 1-2, 16: Under 1.2% fraud rates
+Mid-year generally shows lower baseline fraud
+
+Strategic Implications:
+
+Resource allocation: Concentrate fraud monitoring resources during high-risk weeks (11, 43-52)
+Threshold tuning: Adjust fraud detection thresholds seasonally rather than using fixed rates
+Risk profiling: Use week-based risk scores to flag transactions in high-fraud periods more aggressively
+Staffing: Plan investigation teams for peak fraud seasons
+
+#########################################################################################################################
+
+###################### Which payment methods have the highest fraud rates relative to volume? ######################
+
+Wallet is the highest-risk payment method (3.68% fraud rate)
+
+Not only has the highest rate, but also the highest absolute fraud count (121 frauds)
+This is worth looking into
+Card is the safest (2.51% fraud rate)
+
+Lowest fraud rate despite having the most transaction volume (3,423 transactions)
+Suggests card payments have better built-in fraud protections
+
+ACH is in the middle (3.11% fraud rate)
+Moderately risky, but fewer frauds overall (102)
+
+
+Volumes are comparable (~3,300 transactions each)
+This makes the rate differences meaningful and not due to sampling bias
+Each method has sufficient data to trust the patterns
+
+
+Actionable Recommendations:
+Tighten wallet transaction monitoring: Implement stricter velocity checks, device fingerprinting, or transaction limits
+Investigate wallet fraud patterns: Are wallet frauds from specific merchants, devices, or geographies?
+Leverage card security: Study what makes card payments safer and apply those controls to other methods
+Risk-based pricing: Consider adjusting interchange fees or transaction limits based on payment method risk
+Customer education: Warn users about wallet fraud risks or require additional verification for wallet transfers
+
+#########################################################################################################################
+
+
+
+
+############################## What percentage of fraud comes from cross-country transactions compared to their share of total volume? #####################################
+
+
+Massive Risk Differential: Cross-country transactions are 4.6x more likely to be fraudulent (9.45% vs 2.03%)
+
+Risk Concentration:
+
+Only 14% of transactions are cross-country
+But they account for 43.7% of all fraud (135 out of 309 total frauds)
+This is disproportionately high fraud contribution
+Actionable Insight: Cross-country transactions should be treated as high-risk by default
+
+Recommended Actions:
+
+Enhanced verification for cross-country transactions (2FA, additional KYC checks)
+Stricter limits on transaction amounts for cross-country transfers
+Velocity controls on per-user/per-device cross-country frequency
+Geolocation verification — flag if user location doesn't match transaction origin/destination
+Real-time monitoring with lower thresholds for cross-country fraud scoring
+
+##################################################################################################################
+
+########################## Are higher transaction amounts more likely to be fraudulent? ##########################
+
+
+Price Range	Fraud Rate	Insight
+Very High Price ($301-1000)	3.41% ⚠️ HIGHEST	Transactions above $300 are riskiest
+Medium Price ($51-100)	3.37%	Second-highest risk zone
+Low Price ($0-50)	3.19%	Moderate risk
+High Price ($101-300)	2.73%	Surprisingly LOWEST
+Unknown	2.44%	Edge cases with minimal fraud
+
+Tighten Controls on $301-1000 Transactions
+Implement mandatory 2FA/OTP for Very High Price purchases
+Flag for manual review if combined with other risk factors (cross-country, late-night, high velocity)
+Set transaction velocity limits for this tier
+Investigate the $101-300 Anomaly
+
+This range has surprisingly LOW fraud (2.73%) despite being substantial
+Possible reasons:
+Natural friction point where customers verify transactions more carefully
+Fraudsters avoid this sweet spot (too visible, not enough payoff)
+Action: Keep current controls on this range—they're working
+Risk-Based Tiering Strategy
+
+Group transactions into 3 approval tiers:
+Tier 1 ($0-100): Standard checks, faster approval
+Tier 2 ($101-300): Enhanced verification (your safest zone)
+Tier 3 ($301+): Strict controls, higher friction acceptable
+Focus Limited Resources
+
+Allocate 40% of fraud prevention efforts to Tier 3
+30% to Tier 1 (volume-based)
+20% to Tier 2 (already performs well)
+10% to edge cases
+Monitor the Unknown Category
+
+Investigate what transactions fall into "Unknown" (likely NULL amounts or data entry errors)
+Clean data to ensure proper categorization
+
+###########################################################################################################
+
+#################################### Are certain users responsible for multiple fraud attempts? #################################3
+
+1. Priority Alert: user_812 (4 Frauds)
+2. High-Risk Cluster: 3-Fraud Users (user_452, user_682, user_984)
+3. Volume Problem: 23 Users with 2 Frauds Each
+
+
+
+Implement Progressive Friction
+
+After 1st fraud detection → Enhanced verification for 30 days
+After 2nd fraud detection → Account suspension + manual review
+After 3rd fraud detection → Permanent ban
+Cross-Reference Analysis
+
+Check if these repeat offenders share:
+Same devices
+Same merchants
+Same geographic locations
+Same payment methods
+Could indicate an organized ring rather than isolated incidents
+Early Warning System
+
+Flag users approaching 2 frauds (at 1st fraud)
+Set alerts for devices/merchants associated with repeat offenders
+Block high-risk combinations before next fraud happens
+Recovery & Prevention
+
+Contact all 27 users proactively
+Provide account security audit
+Offer compromised account recovery steps
+Monitor reactivated accounts intensely
+
+
+
+
+########################### Are there devices used by multiple users with elevated fraud rates? ##################################
+
+
+The analysis uncovered a subset of devices that are used by multiple distinct users and demonstrate significantly elevated fraud rates relative to the overall transaction baseline.
+Several devices (e.g., device_669 and device_1537) show 100% fraud rates, with every recorded transaction on those devices flagged as fraudulent. 
+These devices are characterized by low transaction volume but multiple associated users, a pattern commonly associated with disposable or “burner” devices used for rapid fraud execution.
+
+Other devices (such as device_2722, device_216, and device_186) exhibit moderate to high fraud rates (50–67%) across three to four users, suggesting coordinated activity rather than isolated user behavior. 
+These devices represent elevated risk due to both repeated fraud events and user sharing.
+
+A third category of devices (e.g., device_887 and device_1095) shows lower fraud rates (25–40%) but is associated with a larger number of users (up to eight). 
+While not immediately block-worthy, these devices warrant monitoring due to their broad user reach and fraud rates that remain well above the dataset average.
+
+
+Risk Interpretation
+The presence of repeated fraud attempts across multiple users on the same device strongly indicates non-independent behavior, consistent with:
+Account farming
+Credential sharing
+Organized fraud operations
+
+Importantly, fraud rate alone is not sufficient for risk determination. 
+Devices with lower fraud rates but higher transaction volume may pose greater systemic risk than low-volume devices with extreme fraud rates.
+
+Conclusion
+The analysis confirms that shared devices are a meaningful fraud signal. 
+Devices used by multiple users with elevated fraud rates should be prioritized for risk scoring, step-up authentication, or blocking, depending on transaction volume and user reach.
+Differentiating between burner-style devices and high-reach shared devices enables more effective and targeted fraud mitigation strategies.
